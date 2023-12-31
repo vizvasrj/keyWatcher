@@ -4,9 +4,14 @@
 
 ## Requirements
 
-[https://github.com/MarinX/keylogger](https://github.com/MarinX/keyloggerhttps)
+[https://github.com/MarinX/keylogger](https://github.com/MarinX/keylogger)
 
 Visit upper link if any error happens in keylogger package
+
+And you can view all key string from this page
+
+[https://github.com/MarinX/keylogger/blob/master/keymapper.go](https://github.com/MarinX/keylogger/blob/master/keymapper.go)
+
 
 ## Installation
 
