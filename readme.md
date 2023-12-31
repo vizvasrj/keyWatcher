@@ -2,6 +2,11 @@
 
 `keywatcher` is a Go package for watching key combinations using the keylogger library.
 
+## Requirements
+
+[https://github.com/MarinX/keylogger](https://github.com/MarinX/keyloggerhttps)
+Visit upper link if any error happens in keylogger package
+
 ## Installation
 
 ```bash
@@ -9,6 +14,7 @@ go get -u github.com/vizvasrj/keywatcher
 ```
 
 ## Here how to use this
+
 ```go
 
 import (
@@ -46,5 +52,6 @@ now press the key combination and see the magic
 first press `ctrl` then `enter` and then `alt`
 
 ## Limitations
+
 Currently it does not support pressing event of the key combination.
 it only supports the release event of the key combination.
