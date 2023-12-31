@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/MarinX/keylogger"
-	"github.com/fatih/color"
 )
 
 type Key struct {
@@ -39,8 +38,8 @@ func Watch(k ...Key) (*KeyCombination, error) {
 
 	kl, err := keylogger.New(devs[0])
 	if err != nil {
-		fmt.Println("Error creating keylogger:", err)
-		// return fmt.Errorf("no")
+		// fmt.Println("Error creating keylogger:", err)
+		return nil, err
 	}
 	// defer kl.Close()
 	doneChan := make(chan any)
@@ -52,14 +51,14 @@ func Watch(k ...Key) (*KeyCombination, error) {
 	kc.WatchChan = watchChan
 
 	go func() {
-		defer color.Red("closed main go func...")
+		// defer color.Red("closed main go func...")
 
 		// *first part
 		last_key := make(chan string)
 		kc.wg.Add(1)
 		go func() {
 			defer kc.wg.Done()
-			defer color.Red("Close first part go routine")
+			// defer color.Red("Close first part go routine")
 
 			for {
 				select {
@@ -72,7 +71,7 @@ func Watch(k ...Key) (*KeyCombination, error) {
 					// for _, this_key := range kc.keys {
 					// 	if this_key.KeyString == e.KeyString() {
 					if e.KeyString() != "" && e.KeyString() != "3" {
-						fmt.Printf("key: %s code: %#v, type: %#v, value: %#v, press: %#v, release: %#v\n", e.KeyString(), e.Code, e.Type, e.Value, e.KeyPress(), e.KeyRelease())
+						// fmt.Printf("key: %s code: %#v, type: %#v, value: %#v, press: %#v, release: %#v\n", e.KeyString(), e.Code, e.Type, e.Value, e.KeyPress(), e.KeyRelease())
 						last_key <- e.KeyString()
 					}
 					// 	}
@@ -89,14 +88,14 @@ func Watch(k ...Key) (*KeyCombination, error) {
 		kc.wg.Add(1)
 		go func() {
 			defer kc.wg.Done()
-			defer color.Red("Close second part go routine")
+			// defer color.Red("Close second part go routine")
 			for {
 				select {
 				case k := <-last_key:
-					color.Green("recieved k %s", k)
+					// color.Green("recieved k %s", k)
 					lKey = append(lKey[1:], k)
 					if checkKeyCombination(lKey, kc.keys) {
-						color.Red("Key combination pressed!")
+						// color.Red("Key combination pressed!")
 						kc.WatchChan <- struct{}{}
 					}
 
