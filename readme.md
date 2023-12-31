@@ -44,3 +44,7 @@ func main() {
 
 now press the key combination and see the magic
 first press `ctrl` then `enter` and then `alt`
+
+## Limitations
+Currently it does not support pressing event of the key combination.
+it only supports the release event of the key combination.
