@@ -13,13 +13,12 @@ type Key struct {
 }
 
 type KeyCombination struct {
-	// key2      Key
 	keys      []Key
 	wg        *sync.WaitGroup
 	doneChan  chan any
 	kl        *keylogger.KeyLogger
 	WatchChan chan any
-	// event chan keylogger.InputEvent
+	LastKey   chan string
 }
 
 func Watch(k ...Key) (*KeyCombination, error) {
@@ -49,13 +48,14 @@ func Watch(k ...Key) (*KeyCombination, error) {
 
 	watchChan := make(chan any)
 	kc.WatchChan = watchChan
-
+	last_key := make(chan string)
+	kc.LastKey = last_key
+	kc.wg.Add(1)
 	go func() {
-		// defer color.Red("closed main go func...")
+		defer kc.wg.Done()
 
-		// *first part
-		last_key := make(chan string)
 		kc.wg.Add(1)
+
 		go func() {
 			defer kc.wg.Done()
 			// defer color.Red("Close first part go routine")
@@ -72,7 +72,7 @@ func Watch(k ...Key) (*KeyCombination, error) {
 					// 	if this_key.KeyString == e.KeyString() {
 					if e.KeyString() != "" && e.KeyString() != "3" {
 						// fmt.Printf("key: %s code: %#v, type: %#v, value: %#v, press: %#v, release: %#v\n", e.KeyString(), e.Code, e.Type, e.Value, e.KeyPress(), e.KeyRelease())
-						last_key <- e.KeyString()
+						kc.LastKey <- e.KeyString()
 					}
 					// 	}
 					// }
@@ -91,7 +91,7 @@ func Watch(k ...Key) (*KeyCombination, error) {
 			// defer color.Red("Close second part go routine")
 			for {
 				select {
-				case k := <-last_key:
+				case k := <-kc.LastKey:
 					// color.Green("recieved k %s", k)
 					lKey = append(lKey[1:], k)
 					if checkKeyCombination(lKey, kc.keys) {
@@ -137,4 +137,13 @@ func (kc *KeyCombination) Close() {
 	if err != nil {
 		log.Println(err)
 	}
+
+	if kc.WatchChan != nil {
+		close(kc.WatchChan)
+	}
+
+	if kc.LastKey != nil {
+		close(kc.LastKey)
+	}
+
 }
